@@ -124,10 +124,23 @@ module.exports = config;
 
   有一个问题是，热更新的时候，webpack是不能支持`ExtractTextPlugin`这个插件的，
   但是这个插件是我们在到正式环境，打包的时候才需要用，（css单独打包出来）,不加的话 index.html会把js css 全部打包到bundle.js里，
-  这样是不好维护的，继续看
+  这样是不好维护的，继续看，
 
 
-> 在entry里我们可以看到有一段这样的代码
+在plugins插件里我们添加`new webpack.EnvironmentPlugin(['NODE_ENV']),` 这个用来判断当前环境
+
+```Javascript
+      plugins: [
+            new webpack.EnvironmentPlugin(['NODE_ENV']),
+            ..
+            ..
+            ],
+
+```
+
+
+
+> 然后在entry里我们可以看到有一段这样的代码
 
 ```Javascript
 entry: process.env.NODE_ENV === 'production' ? './webpack.entry.js' : [
@@ -140,7 +153,7 @@ entry: process.env.NODE_ENV === 'production' ? './webpack.entry.js' : [
     ],
 ```
 
-我们在entry 入口里，`加了正式环境及测试环境的判断` ，
+我们在entry 入口里，判断当下环境，
 如果是开发环境就会启动webpack-dev-server，是正式环境就直接打包，然后在配置文件里配置devServer，
 
 ```Javascript
@@ -181,7 +194,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 ```
-
 
 ### webpack会监听被require或import的文件，copy以下代码到webpack.entry.js
 
